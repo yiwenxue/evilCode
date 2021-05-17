@@ -1,0 +1,27 @@
+TEST_CC=clang
+TEST_CXX=clang++
+
+TEST_CFLAGS= -fsanitize=address -fno-omit-frame-pointer -g
+TEST_LIBS= 
+
+ASAN_SYMBOLIZER_PATH=/usr/bin/llvm-symbolizer 
+
+src = pred.c
+bin= ./test/pred
+
+all: test
+
+test: ${bin}
+	@echo "Sarting the test process" 
+	@echo "Symbolizing the report"
+	- cat ${src} | ${bin}
+	@echo "End of test"
+
+${bin}: ${src}
+	mkdir -p ./test 
+	${TEST_CC} ${TEST_CFLAGS} ${src} -o ${bin} ${TEST_LIBS}
+
+.PHONY: clean 
+
+clean: 
+	rm -rf  ./test
